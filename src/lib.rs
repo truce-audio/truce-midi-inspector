@@ -319,15 +319,12 @@ impl PluginLogic for MidiInspector {
             // for the output list.
             match ev.body {
                 EventBody::SysEx { .. } => {
-                    let _ =
-                        context
-                            .output_events
-                            .push_sysex_on_port(ev.sample_offset, ev.port, sysex);
+                    let _ = context.output_events.push_sysex(ev.sample_offset, sysex);
                 }
-                // Preserve the port a thru'd event arrived on.
-                body => context
-                    .output_events
-                    .push(Event::on_port(ev.sample_offset, ev.port, body)),
+                body => context.output_events.push(Event {
+                    sample_offset: ev.sample_offset,
+                    body,
+                }),
             }
         }
 
@@ -473,24 +470,24 @@ mod tests {
         let mut plugin = MidiInspector::new(Arc::new(InspectorParams::new()));
 
         let mut events = EventList::with_capacity(8);
-        events.push(Event::new(
-            0,
-            EventBody::NoteOn {
+        events.push(Event {
+            sample_offset: 0,
+            body: EventBody::NoteOn {
                 group: 0,
                 channel: 0,
                 note: 60,
                 velocity: 100,
             },
-        ));
-        events.push(Event::new(
-            0,
-            EventBody::ControlChange {
+        });
+        events.push(Event {
+            sample_offset: 0,
+            body: EventBody::ControlChange {
                 group: 0,
                 channel: 0,
                 cc: 1,
                 value: 64,
             },
-        ));
+        });
 
         // Stereo passthrough buffer of constant 0.5.
         let input = [[0.5f32; 16], [0.5f32; 16]];
