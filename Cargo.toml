@@ -1,6 +1,5 @@
-# Out-of-tree truce plugin. Depends on truce from crates.io; the
-# `[patch.crates-io]` below redirects to a local truce checkout for
-# development. Drop the patch to build against the published crates.
+# Out-of-tree truce plugin - a plain crates.io consumer of the released
+# truce 1.0.x. (No local patch: it uses no unreleased API.)
 [package]
 name = "truce-midi-inspector"
 version = "0.1.0"
@@ -56,21 +55,3 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(feature, values("cargo-cli
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
-
-# Local-checkout override for development. The paths assume this crate is
-# a sibling of the `truce` repo (`workspaces/truce-midi-inspector` next to
-# `workspaces/truce`). Remove this whole section to build against the
-# published crates.io versions.
-[patch.crates-io]
-truce = { path = "../truce/crates/truce" }
-truce-core = { path = "../truce/crates/truce-core" }
-truce-font = { path = "../truce/crates/truce-font" }
-truce-iced = { path = "../truce/crates/truce-iced" }
-truce-clap = { path = "../truce/crates/truce-clap" }
-truce-vst3 = { path = "../truce/crates/truce-vst3" }
-truce-vst2 = { path = "../truce/crates/truce-vst2" }
-truce-aax = { path = "../truce/crates/truce-aax" }
-truce-au = { path = "../truce/crates/truce-au" }
-truce-lv2 = { path = "../truce/crates/truce-lv2" }
-truce-standalone = { path = "../truce/crates/truce-standalone" }
-truce-test = { path = "../truce/crates/truce-test" }
