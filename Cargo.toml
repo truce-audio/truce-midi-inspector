@@ -1,0 +1,76 @@
+# Out-of-tree truce plugin. Depends on truce from crates.io; the
+# `[patch.crates-io]` below redirects to a local truce checkout for
+# development. Drop the patch to build against the published crates.
+[package]
+name = "truce-midi-inspector"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+license = "LicenseRef-TruceLicense-1.0"
+publish = false
+
+# Standalone package - not part of any parent workspace.
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[[bin]]
+name = "truce-midi-inspector-standalone"
+path = "src/main.rs"
+required-features = ["standalone"]
+
+[features]
+default = ["clap", "vst3", "lv2", "au", "aax"]
+clap = ["dep:truce-clap", "dep:clap-sys"]
+vst3 = ["dep:truce-vst3"]
+vst2 = ["dep:truce-vst2"]
+lv2 = ["dep:truce-lv2"]
+aax = ["dep:truce-aax"]
+au = ["dep:truce-au"]
+standalone = ["dep:truce-standalone"]
+shell = ["truce/shell"]
+
+[dependencies]
+truce = { version = "1.0.4", default-features = false }
+truce-core = "1.0.4"
+truce-font = "1.0.4"
+truce-iced = "1.0.4"
+truce-clap = { version = "1.0.4", optional = true }
+truce-vst3 = { version = "1.0.4", optional = true }
+truce-vst2 = { version = "1.0.4", optional = true }
+truce-aax = { version = "1.0.4", optional = true }
+truce-au = { version = "1.0.4", optional = true }
+truce-lv2 = { version = "1.0.4", optional = true }
+truce-standalone = { version = "1.0.4", features = ["gui"], optional = true }
+clap-sys = { version = "0.5", optional = true }
+
+# Lock-free handoff of decoded events from the audio thread to the editor.
+crossbeam-queue = "0.3"
+
+[dev-dependencies]
+truce-test = "1.0.4"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(feature, values("cargo-clippy"))'] }
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+
+# Local-checkout override for development. The paths assume this crate is
+# a sibling of the `truce` repo (`workspaces/truce-midi-inspector` next to
+# `workspaces/truce`). Remove this whole section to build against the
+# published crates.io versions.
+[patch.crates-io]
+truce = { path = "../truce/crates/truce" }
+truce-core = { path = "../truce/crates/truce-core" }
+truce-font = { path = "../truce/crates/truce-font" }
+truce-iced = { path = "../truce/crates/truce-iced" }
+truce-clap = { path = "../truce/crates/truce-clap" }
+truce-vst3 = { path = "../truce/crates/truce-vst3" }
+truce-vst2 = { path = "../truce/crates/truce-vst2" }
+truce-aax = { path = "../truce/crates/truce-aax" }
+truce-au = { path = "../truce/crates/truce-au" }
+truce-lv2 = { path = "../truce/crates/truce-lv2" }
+truce-standalone = { path = "../truce/crates/truce-standalone" }
+truce-test = { path = "../truce/crates/truce-test" }

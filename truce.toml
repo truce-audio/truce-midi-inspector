@@ -1,0 +1,25 @@
+# Plugin manifest for the out-of-tree MIDI Inspector.
+# `cargo truce build / install / package` read this at the crate root.
+
+[vendor]
+name = "Truce"
+id = "com.truce"
+url = "https://github.com/truce-audio/truce"
+au_manufacturer = "Trce"
+
+[[plugin]]
+name = "Truce MIDI Inspector"
+bundle_id = "midi-inspector"
+crate = "truce-midi-inspector"
+# Audio effect with a stereo passthrough that also monitors + forwards
+# MIDI (AU `aumf` MusicEffect). The audio I/O lets it load as an insert
+# in hosts that don't host MIDI-only plug-ins (Ableton, Reaper); a pure
+# MIDI processor (`category = "midi"` -> `aumi`) is invisible there.
+category = "effect"
+midi_input = true
+midi_output = true
+fourcc = "TMin"
+au3_subtype = "TMi3"
+au_tag = "Effects"
+vst3_subcategory = "Tools"
+au3_name = "Truce MIDI Inspector (AUv3)"
